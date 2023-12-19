@@ -21,7 +21,8 @@
     ],
     "require": {
         "php": ">=7.1",
-        "illuminate/support": "^8.0"
+        "illuminate/support": "^8.0",
+        "espero-soft/artisan": "^1.0"
     },
     "autoload": {
         "psr-4": {
