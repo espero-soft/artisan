@@ -1,4 +1,3 @@
-```markdown
 # espero-soft/artisan
 
 A Laravel package for generating entities and CRUD operations.
@@ -68,4 +67,3 @@ All contributions are welcome! If you'd like to improve this package, please ope
 ## License
 
 This package is under the MIT license. Refer to the `LICENSE` file for more details.
-```
