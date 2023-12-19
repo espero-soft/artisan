@@ -1,70 +1,71 @@
+```markdown
 # espero-soft/artisan
 
-Un package Laravel pour générer des entités et des CRUD.
+A Laravel package for generating entities and CRUD operations.
 
 ## Installation
 
-Exécutez la commande suivante pour installer le package :
+Run the following command to install the package:
 
 ```bash
 composer require espero-soft/artisan:dev-main
 ```
 
-Mettre à jour la méthode ```bash commands ``` du fichier ```bash app/Console/kernel.php ```:
+Update the `commands` method in the `app/Console/kernel.php` file:
 
 ```bash
-    /**
-     * Register the commands for the application.
-     */
-    protected function commands(): void
-    {
-        $this->load(__DIR__.'/Commands');
+/**
+ * Register the commands for the application.
+ */
+protected function commands(): void
+{
+    $this->load(__DIR__.'/Commands');
 
-        // Registering the MakeEntityCommand as a ClosureCommand
-        $this->getArtisan()->add( new MakeEntityCommand() );
-        // Registering the MakeCrudCommand as a ClosureCommand
-        $this->getArtisan()->add( new MakeCrudCommand() );
+    // Registering the MakeEntityCommand as a ClosureCommand
+    $this->getArtisan()->add( new MakeEntityCommand() );
+    // Registering the MakeCrudCommand as a ClosureCommand
+    $this->getArtisan()->add( new MakeCrudCommand() );
 
-        require base_path('routes/console.php');
-    }
+    require base_path('routes/console.php');
+}
 ```
 
+## Usage
 
-## Utilisation
+### Generate an Entity
 
-### Générer une Entité
-
-Pour générer une nouvelle entité, utilisez la commande suivante :
+To generate a new entity, use the following command:
 
 ```bash
-php artisan make:entity NomDeVotreEntite
+php artisan make:entity YourEntityName
 ```
 
-### Générer un CRUD
+### Generate a CRUD
 
-Pour créer un CRUD complet pour une entité existante, utilisez la commande suivante :
+To create a complete CRUD for an existing entity, use the following command:
 
 ```bash
-php artisan make:crud NomDeVotreEntite
+php artisan make:crud YourEntityName
 ```
 
-## Exemples
+## Examples
 
-Voici quelques exemples d'utilisation :
+Here are a few usage examples:
 
 ```bash
 php artisan make:entity Post
 php artisan make:crud Post
 ```
 
-## Contribuer
+## Contribute
 
-Toute contribution est la bienvenue ! Si vous souhaitez améliorer ce package, veuillez ouvrir une issue pour discuter des changements proposés.
+All contributions are welcome! If you'd like to improve this package, please open an issue to discuss the proposed changes.
 
-## Auteur
+## Author
 
 [Espero-Soft Informatiques](https://github.com/espero-soft/artisan)
 
-## Licence
+## License
 
-Ce package est sous licence MIT. Consultez le fichier `LICENSE` pour plus de détails.
+This package is under the MIT license. Refer to the `LICENSE` file for more details.
+```
