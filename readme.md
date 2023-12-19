@@ -10,7 +10,7 @@ Exécutez la commande suivante pour installer le package :
 composer require espero-soft/artisan:dev-main
 ```
 
-Publiez les fichiers de configuration avec :
+Mettre à jour la méthode ```bash commands ``` du fichier ```bash app/Console/kernel.php ```:
 
 ```bash
     /**
