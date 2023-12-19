@@ -41,12 +41,14 @@ class MakeEntityCommand extends Command
             if (isset($data['type']) && !isset($data['relationType'])) {
                 $this->fields[] = [
                     'field' => $field,
+                    'nullable' => $data['nullable'],
                     'type' => Str::lower($data['type']),
                     'relationType' => null, // Assurez-vous de définir la relation sur null si ce n'est pas un champ de relation
                 ];
             } elseif (isset($data['entityRelation']) && isset($data['relationType'])) {
                 $this->fields[] = [
                     'field' => $field,
+                    'nullable' => $data['nullable'],
                     'type' => null, // Assurez-vous de définir le type sur null si ce n'est pas un champ de type
                     'entityRelation' => $data['entityRelation'],
                     'relationType' => $data['relationType'],
@@ -54,10 +56,10 @@ class MakeEntityCommand extends Command
             }
         }
 
-        if($this->action === "_CREATE"){
-            // Generate migration file
+        if ($this->action === "_CREATE") {
+            // Make migration file
             $this->generateMigrationFile();
-        }else if($this->action === "_UPDATE"){
+        } else if ($this->action === "_UPDATE") {
             $this->generateMigrationUpdateFile();
         }
 
@@ -131,7 +133,7 @@ class MakeEntityCommand extends Command
             'relation' => 'Relation to the database',
         ];
 
-         $type = $this->ask('Select field type [' . $defaultType . '] or type ? for help', $defaultType);
+        $type = $this->ask('Select field type [' . $defaultType . '] or type ? for help', $defaultType);
 
         while (!array_key_exists($type, $types) && $type !== '?') {
             $this->error('Invalid type! Available types: ' . implode(', ', array_keys($types)));
@@ -145,11 +147,14 @@ class MakeEntityCommand extends Command
         if ($type === 'relation') {
             $relationData = $this->askForRelationType();
         }
+        $nullable = $this->ask('Can this field be null ? (yes/no)', 'yes');
+        $nullable = strtolower($nullable);
 
         return [
             'type' => $type,
             'entityRelation' => isset($relationData['entityRelation']) ? $relationData['entityRelation'] : null,
             'relationType' => isset($relationData['relationType']) ? $relationData['relationType'] : null,
+            'nullable' => $nullable,
         ];
 
     }
@@ -164,9 +169,9 @@ class MakeEntityCommand extends Command
         $relationType = $this->choice('Select relation type:', $relationTypes);
 
         return [
-            'entityRelation'=>$entityRelation,
-            'relationType'=>$relationType
-    ];
+            'entityRelation' => $entityRelation,
+            'relationType' => $relationType
+        ];
     }
 
     protected function showAvailableTypes($types)
@@ -215,12 +220,17 @@ class MakeEntityCommand extends Command
         $fieldsToAdd = [];
         $fieldsToRelation = [];
         foreach ($this->fields as $field) {
+
             $columnName = $field['field'];
-            if($field['type']){
+            if ($field['type']) {
                 $columnType = $field['type'];
-                $fieldsToAdd[] = sprintf("\t\$table->%s('%s');", $columnType, $columnName);
+                if($field['nullable'] === 'yes'){
+                    $fieldsToAdd[] = sprintf("\t\$table->%s('%s')->nullable();", $columnType, $columnName);
+                }else{
+                    $fieldsToAdd[] = sprintf("\t\$table->%s('%s');", $columnType, $columnName);
+                }
             }
-            if($field['relationType']){
+            if ($field['relationType']) {
                 $entityRelation = $field['entityRelation'];
                 $relationType = $field['relationType'];
                 $fieldsToRelation[] = [
@@ -233,12 +243,12 @@ class MakeEntityCommand extends Command
 
         $tableName = $this->getTableName();
 
-        $newFields =  implode("\n\t\t", $fieldsToAdd);
+        $newFields = implode("\n\t\t", $fieldsToAdd);
         // $newFields =  ltrim($newFields, "\t");
 
 
         // Recherche et remplacement du contenu de la méthode up()
-        $fileContent = $this->replaceUpMethodContent($fileContent, $newFields, $tableName,  $fieldsToRelation);
+        $fileContent = $this->replaceUpMethodContent($fileContent, $newFields, $tableName, $fieldsToRelation);
 
         $result = file_put_contents($migrationFile, $fileContent);
 
@@ -258,7 +268,7 @@ class MakeEntityCommand extends Command
 
         if (count($migrationFiles) === 0) {
             $this->call('make:migration', [
-            'name' => $this->migrationFileName,
+                'name' => $this->migrationFileName,
                 '--create' => $this->getTableName(),
             ]);
             $migrationFiles = $this->findMigrationFiles($this->migrationFileName);
@@ -288,19 +298,24 @@ class MakeEntityCommand extends Command
 
         foreach ($matches[1] as $index => $columnType) {
             $columnName = trim($matches[2][$index], "'");
-            if($columnType !== "id" && $columnType !== "timestamps"){
-                $fieldsToAdd[] = sprintf("\t\$table->%s('%s');", $columnType, $columnName);
+            if ($columnType !== "id" && $columnType !== "timestamps") {
+                $fieldsToAdd[] = sprintf("\t\$table->%s('%s')%s;", $columnType, $columnName, isset($matches[3]) && $matches[3][$index] === '->nullable()' ? '->nullable()' : '');
             }
         }
 
 
         foreach ($this->fields as $field) {
             $columnName = $field['field'];
-            if($field['type']){
+            if ($field['type']) {
                 $columnType = $field['type'];
-                $fieldsToAdd[] = sprintf("\t\$table->%s('%s');", $columnType, $columnName);
+                // $fieldsToAdd[] = sprintf("\t\$table->%s('%s');", $columnType, $columnName);
+                if($field['nullable'] === 'yes'){
+                    $fieldsToAdd[] = sprintf("\t\$table->%s('%s')->nullable();", $columnType, $columnName);
+                }else{
+                    $fieldsToAdd[] = sprintf("\t\$table->%s('%s');", $columnType, $columnName);
+                }
             }
-            if($field['relationType']){
+            if ($field['relationType']) {
                 $entityRelation = $field['entityRelation'];
                 $relationType = $field['relationType'];
                 $fieldsToRelation[] = [
@@ -313,12 +328,12 @@ class MakeEntityCommand extends Command
 
         $tableName = $this->getTableName();
 
-        $newFields =  implode("\n\t\t", $fieldsToAdd);
+        $newFields = implode("\n\t\t", $fieldsToAdd);
         // $newFields =  ltrim($newFields, "\t");
 
 
         // Recherche et remplacement du contenu de la méthode up()
-        $fileContent = $this->replaceUpMethodContent($fileContent, $newFields, $tableName,  $fieldsToRelation);
+        $fileContent = $this->replaceUpMethodContent($fileContent, $newFields, $tableName, $fieldsToRelation);
 
         $result = file_put_contents($migrationFile, $fileContent);
 
@@ -331,7 +346,7 @@ class MakeEntityCommand extends Command
         $this->updateModelFillable($this->entityName, $fillableFields);
     }
 
-    protected function replaceUpMethodContent($fileContent, $newFields, $tableName,  $fieldsToRelation = null)
+    protected function replaceUpMethodContent($fileContent, $newFields, $tableName, $fieldsToRelation = null)
     {
         // Début de la méthode up()
         $upStart = strpos($fileContent, 'public function up(): void');
@@ -343,73 +358,73 @@ class MakeEntityCommand extends Command
         $upMethod = substr($fileContent, $upStart + 1, $upEnd - $upStart - 1);
 
         // Nouveau contenu de la méthode up()
-    $newUpMethod = "\n\t\tSchema::create('$tableName', function (Blueprint \$table) {
+        $newUpMethod = "\n\t\tSchema::create('$tableName', function (Blueprint \$table) {
         \t\$table->id();
         $newFields
         \t\$table->timestamps();
         ";
 
-    // Ajout des relations si nécessaire
-    if ($fieldsToRelation && count($fieldsToRelation) > 0) {
-        $newUpMethod .= "});\n\n";
-        foreach ($fieldsToRelation as $field) {
-            $newTableName = Str::plural(strtolower($field['entityRelation']));
+        // Ajout des relations si nécessaire
+        if ($fieldsToRelation && count($fieldsToRelation) > 0) {
+            $newUpMethod .= "});\n\n";
+            foreach ($fieldsToRelation as $field) {
+                $newTableName = Str::plural(strtolower($field['entityRelation']));
 
-            if ($field['relationType'] === "OneToOne") {
-                // Gestion OneToOne
-                $newUpMethod .= "\t\tSchema::table('$newTableName', function (Blueprint \$table) {
+                if ($field['relationType'] === "OneToOne") {
+                    // Gestion OneToOne
+                    $newUpMethod .= "\t\tSchema::table('$newTableName', function (Blueprint \$table) {
                     \$table->foreignIdFor(\\App\\Models\\{$this->entityName}::class)->constrained()->onDelete('cascade');
                 ";
-                $methodContent_1 = "\n\t\treturn \$this->belongsTo(\\App\\Models\\{$field['entityRelation']}::class);\n\t";
-                $methodContent_2 = "\n\t\treturn \$this->belongsTo(\\App\\Models\\{$this->entityName}::class);\n\t";
-                $methodName_1 = Str::singular($newTableName);
-                $methodName_2 = Str::singular($tableName);
-                $this->updateModelWithMethod($this->entityName, $methodName_1, $methodContent_1);
-                $this->updateModelWithMethod($field['entityRelation'], $methodName_2, $methodContent_2);
-            } elseif ($field['relationType'] === "OneToMany") {
-                // Gestion OneToMany
-                $newUpMethod .= "\t\tSchema::table('$newTableName', function (Blueprint \$table) {
+                    $methodContent_1 = "\n\t\treturn \$this->hasOne(\\App\\Models\\{$field['entityRelation']}::class);\n\t";
+                    $methodContent_2 = "\n\t\treturn \$this->belongsTo(\\App\\Models\\{$this->entityName}::class);\n\t";
+                    $methodName_1 = Str::singular($newTableName);
+                    $methodName_2 = Str::singular($tableName);
+                    $this->updateModelWithMethod($this->entityName, $methodName_1, $methodContent_1);
+                    $this->updateModelWithMethod($field['entityRelation'], $methodName_2, $methodContent_2);
+                } elseif ($field['relationType'] === "OneToMany") {
+                    // Gestion OneToMany
+                    $newUpMethod .= "\t\tSchema::table('$newTableName', function (Blueprint \$table) {
                     \$table->foreignIdFor(\\App\\Models\\{$this->entityName}::class)->constrained()->onDelete('cascade');
                 \n";
-                $methodContent_1 = "\n\t\treturn \$this->hasMany(\\App\\Models\\{$field['entityRelation']}::class);\n\t";
-                $methodContent_2 = "\n\t\treturn \$this->belongsTo(\\App\\Models\\{$this->entityName}::class);\n\t";
-                $methodName_1 = Str::plural($newTableName);
-                $methodName_2 = Str::singular($tableName);
-                $this->updateModelWithMethod($this->entityName, $methodName_1, $methodContent_1);
-                $this->updateModelWithMethod($field['entityRelation'], $methodName_2, $methodContent_2);
+                    $methodContent_1 = "\n\t\treturn \$this->hasMany(\\App\\Models\\{$field['entityRelation']}::class);\n\t";
+                    $methodContent_2 = "\n\t\treturn \$this->belongsTo(\\App\\Models\\{$this->entityName}::class);\n\t";
+                    $methodName_1 = Str::plural($newTableName);
+                    $methodName_2 = Str::singular($tableName);
+                    $this->updateModelWithMethod($this->entityName, $methodName_1, $methodContent_1);
+                    $this->updateModelWithMethod($field['entityRelation'], $methodName_2, $methodContent_2);
 
-            } elseif ($field['relationType'] === "ManyToOne") {
-                // Gestion ManyToOne
-                $newUpMethod .= "\t\tSchema::table('$tableName', function (Blueprint \$table) {
+                } elseif ($field['relationType'] === "ManyToOne") {
+                    // Gestion ManyToOne
+                    $newUpMethod .= "\t\tSchema::table('$tableName', function (Blueprint \$table) {
                     \$table->foreignIdFor(\\App\\Models\\{$field['entityRelation']}::class)->constrained()->onDelete('cascade');
                 ";
-                $methodContent_1 = "\n\t\treturn \$this->belongsTo(\\App\\Models\\{$field['entityRelation']}::class);\n\t";
-                $methodContent_2 = "\n\t\treturn \$this->hasMany(\\App\\Models\\{$this->entityName}::class);\n\t";
-                $methodName_1 = Str::singular($newTableName);
-                $methodName_2 = Str::plural($tableName);
-                $this->updateModelWithMethod($this->entityName, $methodName_1, $methodContent_1);
-                $this->updateModelWithMethod($field['entityRelation'], $methodName_2, $methodContent_2);
+                    $methodContent_1 = "\n\t\treturn \$this->belongsTo(\\App\\Models\\{$field['entityRelation']}::class);\n\t";
+                    $methodContent_2 = "\n\t\treturn \$this->hasMany(\\App\\Models\\{$this->entityName}::class);\n\t";
+                    $methodName_1 = Str::singular($newTableName);
+                    $methodName_2 = Str::plural($tableName);
+                    $this->updateModelWithMethod($this->entityName, $methodName_1, $methodContent_1);
+                    $this->updateModelWithMethod($field['entityRelation'], $methodName_2, $methodContent_2);
 
-            } elseif ($field['relationType'] === "ManyToMany") {
-                // Gestion ManyToMany
-                $tab = collect([
-                    Str::singular($tableName),
-                    Str::singular($newTableName),
-                ])->sort()->implode('_');
-                $newUpMethod .= "\t\tSchema::create('" . $tab . "', function (Blueprint \$table) {
+                } elseif ($field['relationType'] === "ManyToMany") {
+                    // Gestion ManyToMany
+                    $tab = collect([
+                        Str::singular($tableName),
+                        Str::singular($newTableName),
+                    ])->sort()->implode('_');
+                    $newUpMethod .= "\t\tSchema::create('" . $tab . "', function (Blueprint \$table) {
                     \$table->foreignIdFor(\\App\\Models\\{$this->entityName}::class)->constrained()->onDelete('cascade');
                     \$table->foreignIdFor(\\App\\Models\\{$field['entityRelation']}::class)->constrained()->onDelete('cascade');
-                    \$table->primary(['".Str::singular(strtolower($tableName))."_id','".Str::singular(strtolower($field['entityRelation']))."_id']);
+                    \$table->primary(['" . Str::singular(strtolower($tableName)) . "_id','" . Str::singular(strtolower($field['entityRelation'])) . "_id']);
                 ";
-                $methodContent_1 = "\n\t\treturn \$this->belongsToMany(\\App\\Models\\{$field['entityRelation']}::class);\n\t";
-                $methodContent_2 = "\n\t\treturn \$this->belongsToMany(\\App\\Models\\{$this->entityName}::class);\n\t";
-                $methodName_1 = Str::plural($newTableName);
-                $methodName_2 = Str::plural($tableName);
-                $this->updateModelWithMethod($this->entityName, $methodName_1, $methodContent_1);
-                $this->updateModelWithMethod($field['entityRelation'], $methodName_2, $methodContent_2);
+                    $methodContent_1 = "\n\t\treturn \$this->belongsToMany(\\App\\Models\\{$field['entityRelation']}::class);\n\t";
+                    $methodContent_2 = "\n\t\treturn \$this->belongsToMany(\\App\\Models\\{$this->entityName}::class);\n\t";
+                    $methodName_1 = Str::plural($newTableName);
+                    $methodName_2 = Str::plural($tableName);
+                    $this->updateModelWithMethod($this->entityName, $methodName_1, $methodContent_1);
+                    $this->updateModelWithMethod($field['entityRelation'], $methodName_2, $methodContent_2);
+                }
             }
         }
-    }
 
         $fileContent = substr_replace($fileContent, $newUpMethod, $upStart + 1, $upEnd - $upStart - 1);
         return $fileContent;
@@ -449,7 +464,7 @@ class MakeEntityCommand extends Command
         return null;
     }
 
-    // Ajoutez cette méthode dans votre classe GenerateEntityCommand
+    // Ajoutez cette méthode dans votre classe MakeEntityCommand
     protected function updateModelFillable($modelName, $fillableArray)
     {
         $modelFile = $this->findModelFile($modelName);
@@ -598,3 +613,4 @@ class MakeEntityCommand extends Command
 }
 
 ?>
+
