@@ -1,11 +1,13 @@
 {
     "name": "espero-soft/artisan",
     "description": "Laravel command line interface (CLI)",
+    "version": "1.0.0",
     "type": "library",
     "license": "MIT",
     "config": {
         "secure-http": false
     },
+    "minimum-stability": "stable",
     "keywords": [
         "model",
         "laravel",
@@ -32,6 +34,5 @@
             "name": "Espero-Soft Informatiques",
             "email": "contact@espero-soft.com"
         }
-    ],
-    "version": "1.0.0"
+    ]
 }
