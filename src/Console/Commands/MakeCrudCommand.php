@@ -362,7 +362,7 @@ class MakeCrudCommand extends Command
                 $content .= <<<HTML
                     <div class="name"><strong>$Field</strong></div>
                     <div class="form-group d-flex" id="preview_imageUrl" style="max-width: 100%;">
-                        <img src="{{ Storage::url(\${$entityInstance}->$field) }}"
+                        <img src="{{ Str::startsWith(\${$entityInstance}->$field, 'http') ? \${$entityInstance}->$field : Storage::url(\${$entityInstance}->$field) }}"
                              alt="Prévisualisation de l'image"
                              style="max-width: 100px; display: block;">
                     </div>
@@ -374,7 +374,7 @@ class MakeCrudCommand extends Command
                     <div class="form-group d-flex" id="preview_imageUrls" style="max-width: 100%;">
                         <!-- Assurez-vous que \$this->entity->$field est un tableau d'URLs -->
                         <?php foreach (\${$entityInstance}->$field as \$url): ?>
-                            <img src="{{ Storage::url(\$url) }}"
+                            <img src="{{ Str::startsWith(\$url, 'http') ? \$url : Storage::url(\$url) }}"
                                  alt="Prévisualisation de l'image"
                                  style="max-width: 100px; display: block;">
                         <?php endforeach; ?>
@@ -716,7 +716,7 @@ class MakeCrudCommand extends Command
                     elseif ($field === "imageUrl") {
                         $tbody .= '<td>
                             <div class="form-group d-flex" id="preview_imageUrl" style="max-width: 100%;">
-                                <img src="{{ Storage::url($'.$this->entity.'->'.$field.') }}"
+                                <img src="{{  Str::startsWith($'.$this->entity.'->'.$field.', \'http\') ? '.$this->entity.'->'.$field.' : Storage::url($'.$this->entity.'->'.$field.') }}"
                                      alt="Prévisualisation de l\'image"
                                      style="max-width: 100px; display: block;">
                             </div>
@@ -913,6 +913,7 @@ class MakeCrudCommand extends Command
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta http-equiv="X-UA-Compatible" content="ie=edge">
+            <meta name="csrf-token" content="{{ csrf_token() }}">
             <title>
                 @yield('title')
             </title>
