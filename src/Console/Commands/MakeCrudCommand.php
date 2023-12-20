@@ -716,7 +716,7 @@ class MakeCrudCommand extends Command
                     elseif ($field === "imageUrl") {
                         $tbody .= '<td>
                             <div class="form-group d-flex" id="preview_imageUrl" style="max-width: 100%;">
-                                <img src="{{  Str::startsWith($'.$this->entity.'->'.$field.', \'http\') ? '.$this->entity.'->'.$field.' : Storage::url($'.$this->entity.'->'.$field.') }}"
+                                <img src="{{  Str::startsWith($'.$this->entity.'->'.$field.', \'http\') ? $'.$this->entity.'->'.$field.' : Storage::url($'.$this->entity.'->'.$field.') }}"
                                      alt="Prévisualisation de l\'image"
                                      style="max-width: 100px; display: block;">
                             </div>
