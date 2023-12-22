@@ -377,11 +377,12 @@ class MakeCrudCommand extends Command
                     <div class="name"><strong>$Field</strong></div>
                     <div class="form-group d-flex" id="preview_imageUrls" style="max-width: 100%;">
                         <!-- Assurez-vous que \$this->entity->$field est un tableau d'URLs -->
-                        <?php foreach (\${$entityInstance}->$field as \$url): ?>
+                       @foreach (\${$entityInstance}->$field() as \$url): ?>
                             <img src="{{ Str::startsWith(\$url, 'http') ? \$url : Storage::url(\$url) }}"
                                  alt="Prévisualisation de l'image"
-                                 style="max-width: 100px; display: block;">
-                        <?php endforeach; ?>
+                                 style="max-width: 100px; display: block;"
+                                 />
+                        @endforeach
                     </div>
                 HTML;
 
@@ -727,7 +728,17 @@ class MakeCrudCommand extends Command
                         </td>';
                     }
                     elseif($field === "imageUrls"){
-                        $tbody .= "<td>{!! \${$this->entity}->$field !!}</td>";
+                        $tbody .= '<td>
+                            <div class="form-group d-flex" id="preview_imageUrl" style="max-width: 100%;">
+                                @foreach (\${$entityInstance}->$field() as \$url): ?>
+                                    <img src="{{ Str::startsWith(\$url, \'http\') ? \$url : Storage::url(\$url) }}"
+                                        alt="Prévisualisation de l\'image"
+                                        style="max-width: 100px; display: block;"
+                                        />
+                                @endforeach
+                            </div>
+                        </td>';
+                        
                     }
                     else{
                         $tbody .= "<td>{{ \${$this->entity}->$field }}</td>";
