@@ -635,7 +635,7 @@ class MakeCrudCommand extends Command
 
             <script>
                 ClassicEditor
-                    .create( document.querySelector( '#content' ) )
+                    .create( document.querySelector( 'textarea' ) )
                     .catch( error => {
                         console.error( error );
                     } );
