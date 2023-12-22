@@ -728,16 +728,18 @@ class MakeCrudCommand extends Command
                         </td>';
                     }
                     elseif($field === "imageUrls"){
-                        $tbody .= '<td>
+                        $tbody .= <<<HTML
+                        <td>
                             <div class="form-group d-flex" id="preview_imageUrl" style="max-width: 100%;">
-                            @foreach ("\$".{$entityInstance}->$field() as $url) 
-                                <img src="{{Str::startsWith($url, \'http\') ? $url : Storage::url($url)}}"
+                            @foreach (\${$entityInstance}->$field() as \$url) 
+                                <img src="{{Str::startsWith(\$url, \'http\') ? \$url : Storage::url(\$url)}}"
                                     alt="Prévisualisation de l\'image"
                                     style="max-width: 100px; display: block;"
                                     />
                             @endforeah
                         </div>
-                    </td>';
+                    </td>
+                    HTML;
                         
                     }
                     else{
