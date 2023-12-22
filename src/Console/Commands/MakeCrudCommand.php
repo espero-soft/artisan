@@ -238,7 +238,7 @@ class MakeCrudCommand extends Command
 
         foreach ($fields as $index => $field) {
             if(Str::startsWith(Str::lower($field), 'is')){
-                $merges .= "'$field' => \$this->input('$field') ? true : false,\n\t\t\t";
+                $merges .= "'$field' => \$this->input('$field') ? 'true' : 'false',\n\t\t\t";
             }
             if(stripos($field, 'slug') !== false){
                 if(in_array('title', $fields)){
@@ -807,7 +807,7 @@ class MakeCrudCommand extends Command
                         <div class="">
                             <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered">
+                                <table class="table ">
                                     <thead>
                                         <tr>
                                             $thead
