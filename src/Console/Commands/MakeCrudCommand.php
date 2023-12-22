@@ -576,10 +576,10 @@ class MakeCrudCommand extends Command
                         <div class="form-check form-switch">
                             <input name="{$field}" id="{$field}" {{ old('{$field}', isset(\$${entityInstance}) && \$${entityInstance}->{$field} == 'true' ? 'checked' : '') }} class="form-check-input" type="checkbox" role="switch" />
                         </div>
-                        {-- <select class="form-control" name="{$field}" id="{$field}">
+                        {{-- <select class="form-control" name="{$field}" id="{$field}">
                             <option value="true" {{ old('{$field}', isset(\$${entityInstance}) && \$${entityInstance}->{$field} == 'true' ? 'selected' : '') }}>Yes</option>
                             <option value="false" {{ old('{$field}', isset(\$${entityInstance}) && \$${entityInstance}->{$field} == 'false' ? 'selected' : '') }}>No</option>
-                        </select> --}
+                        </select> --}}
 
                         @error('{$field}')
                             <div class="error text-danger">
