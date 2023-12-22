@@ -237,6 +237,9 @@ class MakeCrudCommand extends Command
         $count = count($fields);
 
         foreach ($fields as $index => $field) {
+            if(Str::startsWith(Str::lower($field), 'is')){
+                $merges .= "'$field' => \$this->input($field) ? true : false)";
+            }
             if(stripos($field, 'slug') !== false){
                 if(in_array('title', $fields)){
                     $merges .= "'$field' => \Illuminate\Support\Str::slug(\$this->input('title'))";
