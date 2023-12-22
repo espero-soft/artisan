@@ -217,6 +217,20 @@ class MakeCrudCommand extends Command
                 return redirect()->route('admin.{$entityName}.show', ['id' => \${$entityName}->id]);
             }
 
+            public function updateSpeed($EntityName \$$entityName, Request \$req)
+            {
+                foreach (\$req->all() as \$key => \$value) {
+                    \$$entityName->update([
+                        \$key => \$value
+                    ]);
+                }
+
+                return [
+                    'isSuccess' => true,
+                    'data' => \$req->all()
+                ];
+            }
+
             public function delete($EntityName \$$entityName)
             {
                 {$deleteFile}
@@ -850,6 +864,24 @@ class MakeCrudCommand extends Command
                         @section('scripts')
                            
                             <script>
+                                const checkboxs = document.querySelectorAll('input[type="checkbox"]')
+
+                                checkboxs.forEach((checkbox) => {
+                                checkbox.onchange = async (event) => {
+                                    const { checked, name, dataset } = event.target;
+                                    const { id } = dataset;
+                                    console.log({ checked, name, id });
+                                    const data = { [name]: checked.toString() };
+                                    const csrfToken = document.head.querySelector('meta[name="csrf-token"]').content;
+                                    const response = await fetch('/admin/{$this->entityNames}/speed/' + id, {
+                                        method: 'PUT',
+                                        body: JSON.stringify(data), // Utilisation de JSON.stringify au lieu de JSON.stringfy
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': csrfToken
+                                        }
+                                    });
+                                };
                                 
                                 const deleteButtons = document.querySelectorAll('.deleteBtn')
                                 deleteButtons.forEach(deleteButton => {
@@ -922,6 +954,9 @@ class MakeCrudCommand extends Command
 
         //Update One $EntityName
         Route::put('/{$entityNames}/update/{{$entityInstance}}', '{$controllerNamespace}{$entityName}Controller@update')->name('{$entityInstance}.update');
+
+        //Update One $EntityName Speedly
+        Route::put('/{$entityNames}/speed/{{$entityInstance}}', '{$controllerNamespace}{$entityName}Controller@updateSpeed')->name('{$entityInstance}.update.speed');
 
         //Delete $EntityName
         Route::delete('/{$entityNames}/delete/{{$entityInstance}}', '{$controllerNamespace}{$entityName}Controller@delete')->name('{$entityInstance}.delete');
