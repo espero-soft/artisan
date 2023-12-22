@@ -260,6 +260,9 @@ class MakeCrudCommand extends Command
             elseif(stripos($field, 'password') !== false){
                 $format = 'min:8';
             }
+            elseif(Str::startsWith(Str::lower($field), 'is') !== false){
+                $format = 'in:true,false|nullable';
+            }
             elseif(stripos($field, 'slug') !== false){
                 $format = '';
             }
