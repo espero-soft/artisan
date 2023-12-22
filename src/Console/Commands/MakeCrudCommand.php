@@ -751,6 +751,7 @@ class MakeCrudCommand extends Command
                     }
                     elseif(Str::startsWith(Str::lower($field), "is")){
                         $tbody .= <<<HTML
+                            <td>
                             <div class="form-check form-switch">
                                 <input name="$field" id="$field" value="true" data-bs-toggle="toggle"  {{ isset(\$${entityInstance}) && \$${entityInstance}->{$field} == 'true' ? 'checked' : '' }} class="form-check-input" type="checkbox" role="switch" />
                             </div>
