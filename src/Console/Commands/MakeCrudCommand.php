@@ -497,7 +497,7 @@ class MakeCrudCommand extends Command
 
         foreach ($this->getFields() as $field) {
             $Field = ucfirst($field);
-            if ($field === "content") {
+            if (in_array($field,['content','moreDescription','additionalInfos'])) {
 
                 $content .= <<<HTML
                     <div class="mb-3">
