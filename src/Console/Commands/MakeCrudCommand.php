@@ -731,12 +731,12 @@ class MakeCrudCommand extends Command
                         $tbody .= <<<HTML
                         <td>
                             <div class="form-group d-flex" id="preview_imageUrl" style="max-width: 100%;">
-                            @foreach (\${$entityInstance}->$field() as \$url) 
+                            @foreach ([\${$entityInstance}->$field()[0]] as \$url) 
                                 <img src="{{Str::startsWith(\$url, 'http') ? \$url : Storage::url(\$url)}}"
                                     alt="Prévisualisation de l\'image"
                                     style="max-width: 100px; display: block;"
                                     />
-                            @endforeah
+                            @endforeach
                         </div>
                     </td>
                     HTML;
