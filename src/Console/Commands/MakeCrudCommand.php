@@ -521,9 +521,10 @@ class MakeCrudCommand extends Command
                         <button type="button" class="btn btn-success btn-file my-1" onclick="triggerFileInput('{$field}')">
                             Add file :  ({$Field})
                         </button>
-                        <input type="file" name="{$field}" value="{{ old('{$field}', isset(\$${entityInstance}) ? \$${entityInstance}->{$field} : '') }}" class="visually-hidden form-control imageUpload" id="{$field}" aria-describedby="{$field}Help" required/>
+                        <input type="file" name="{$field}" value="{{ old('{$field}', isset(\$${entityInstance}) ? \$${entityInstance}->{$field} : '') }}" class="visually-hidden form-control imageUpload" id="{$field}" aria-describedby="{$field}Help"/>
 
-                        <div class="form-group d-flex" id="preview_{$field}" style="max-width: 100%;"></div>
+                        <div class="form-group d-flex" id="preview_{$field}" style="max-width: 100%;">
+                        </div>
                         @error('{$field}')
                             <div class="error text-danger">
                                 {{ \$message }}
@@ -539,7 +540,7 @@ class MakeCrudCommand extends Command
                         <button type="button" class="btn btn-success btn-file my-1" onclick="triggerFileInput('{$field}')">
                             Add files :  ({$Field})
                         </button>
-                        <input type="file" name="{$field}" class="form-control imageUpload visually-hidden" id="{$field}" aria-describedby="{$field}Help" multiple required/>
+                        <input type="file" name="{$field}" class="form-control imageUpload visually-hidden" id="{$field}" aria-describedby="{$field}Help" multiple />
                         <div class="form-group  hstack gap-3" id="preview_{$field}" style="max-width: 100%;"></div>
                         @error('{$field}')
                             <div class="error text-danger">{{ \$message }}</div>
@@ -635,11 +636,14 @@ class MakeCrudCommand extends Command
             <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
 
             <script>
+            const textareas = document.querySelectorAll( 'textarea' )
+            textareas.foreach((textarea)=>{
                 ClassicEditor
                     .create( document.querySelector( 'textarea' ) )
                     .catch( error => {
                         console.error( error );
                     } );
+            })
 
                 $(document).ready(function() {
                     $('select').select2();
