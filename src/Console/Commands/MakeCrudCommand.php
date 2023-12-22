@@ -867,6 +867,7 @@ class MakeCrudCommand extends Command
                                 const checkboxs = document.querySelectorAll('input[type="checkbox"]')
 
                                 checkboxs.forEach((checkbox) => {
+
                                 checkbox.onchange = async (event) => {
                                     const { checked, name, dataset } = event.target;
                                     const { id } = dataset;
@@ -882,6 +883,7 @@ class MakeCrudCommand extends Command
                                         }
                                     });
                                 };
+                                })
                                 
                                 const deleteButtons = document.querySelectorAll('.deleteBtn')
                                 deleteButtons.forEach(deleteButton => {
