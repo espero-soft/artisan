@@ -220,7 +220,7 @@ class MakeCrudCommand extends Command
             public function updateSpeed($EntityName \$$entityName, Request \$req)
             {
                 foreach (\$req->all() as \$key => \$value) {
-                    \$$entityName->update([
+                    \${$entityName}->update([
                         \$key => \$value
                     ]);
                 }
