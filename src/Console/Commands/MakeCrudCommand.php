@@ -807,7 +807,7 @@ class MakeCrudCommand extends Command
                         <div class="">
                             <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table">
+                                <table  id="{$entityName}" class="table table-striped">
                                     <thead>
                                         <tr>
                                             $thead
@@ -851,6 +851,7 @@ class MakeCrudCommand extends Command
                             <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
                             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
                             <script>
+                                new DataTable('#{$entityName}');
                                 const deleteButtons = document.querySelectorAll('.deleteBtn')
                                 deleteButtons.forEach(deleteButton => {
                                     deleteButton.addEventListener('click', (event)=>{
@@ -994,7 +995,9 @@ class MakeCrudCommand extends Command
                     </main>
                 </div>
             </div>
-
+                <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+                <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+                <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
             @yield('scripts')
 
         </body>
