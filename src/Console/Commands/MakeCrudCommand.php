@@ -540,7 +540,7 @@ class MakeCrudCommand extends Command
                         <button type="button" class="btn btn-success btn-file my-1" onclick="triggerFileInput('{$field}')">
                             Add files :  ({$Field})
                         </button>
-                        <input type="file" name="{$field}" class="form-control imageUpload visually-hidden" id="{$field}" aria-describedby="{$field}Help" multiple />
+                        <input type="file" name="{$field}[]" class="form-control imageUpload visually-hidden" id="{$field}" aria-describedby="{$field}Help" multiple />
                         <div class="form-group  hstack gap-3" id="preview_{$field}" style="max-width: 100%;"></div>
                         @error('{$field}')
                             <div class="error text-danger">{{ \$message }}</div>
