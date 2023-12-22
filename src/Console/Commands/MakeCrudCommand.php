@@ -636,14 +636,14 @@ class MakeCrudCommand extends Command
             <script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
 
             <script>
-            const textareas = document.querySelectorAll( 'textarea' )
-            textareas.foreach((textarea)=>{
-                ClassicEditor
-                    .create( document.querySelector( 'textarea' ) )
-                    .catch( error => {
-                        console.error( error );
-                    } );
-            })
+                const textareas = document.querySelectorAll('textarea');
+                textareas.forEach((textarea) => {
+                    ClassicEditor
+                        .create(textarea)
+                        .catch(error => {
+                            console.error(error);
+                        });
+                });
 
                 $(document).ready(function() {
                     $('select').select2();
