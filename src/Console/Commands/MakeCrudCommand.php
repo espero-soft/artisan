@@ -114,7 +114,7 @@ class MakeCrudCommand extends Command
         if (in_array('imageUrls', $this->getFields())) {
             $storeFile .= <<<EOD
                 if (\$req->hasFile('imageUrls')) {
-                    \$data['imageUrls'] = \$this->handleImageUpload(\$req->file('imageUrls'));
+                    \$data['imageUrls'] = json_encode(\$this->handleImageUpload(\$req->file('imageUrls')));
                 }
             EOD;
             $updateFile .= <<<EOD
@@ -126,7 +126,7 @@ class MakeCrudCommand extends Command
                             Storage::disk('public')->delete(\$imageUrl);
                         }
                     }
-                    \$data['imageUrls'] = \$uploadedImages;
+                    \$data['imageUrls'] = json_encode(\$uploadedImages);
                 }
             EOD;
             $deleteFile .= <<<EOD
@@ -238,34 +238,37 @@ class MakeCrudCommand extends Command
 
         foreach ($fields as $index => $field) {
             if(stripos($field, 'slug') !== false){
-                $merges .= "'$field' => \Illuminate\Support\Str::slug(\$this->input('title'))";
+                if(in_array('title', $fields)){
+                    $merges .= "'$field' => \Illuminate\Support\Str::slug(\$this->input('title'))";
+                }elseif(in_array('name', $fields)){
+                    $merges .= "'$field' => \Illuminate\Support\Str::slug(\$this->input('name'))";
+                }
             }
         }
         foreach ($fields as $index => $field) {
 
-            $format = "required|string";
+            $format = "string";
 
             if(stripos($field, 'imageUrl') !== false){
                 $format = 'image|mimes:webp,jpeg,png,jpg,gif|max:2048';
-            }
-            if(stripos($field, 'imageUrls') !== false){
-                $format = 'required|array';
-                $format .= '|max:5'; // Nombre maximal de fichiers (ajustez selon vos besoins)
-                $format .= '|each:image|mimes:webp,jpeg,png,jpg,gif|max:2048'; // Chaque fichier doit être une image
-            }
-            elseif(stripos($field, 'email') !== false){
-                $format = 'required|email';
+            }elseif(stripos($field, 'email') !== false){
+                $format = 'email';
             }
             elseif(stripos($field, 'password') !== false){
-                $format = 'required|min:8';
+                $format = 'min:8';
             }
             elseif(stripos($field, 'slug') !== false){
                 $format = '';
             }
 
 
-
-            $rules .= "'$field' => '$format'";
+            if(stripos($field, 'imageUrls') !== false){
+                $rules .= "'$field' => '\$isRequired.array|max:5',\n\t\t\t";
+                $rules .= "'$field.*' => 'image|mimes:webp,jpeg,png,jpg,gif|max:2048'";
+               
+            }else{
+                $rules .= "'$field' => '\$isRequired.$format'";
+            }
 
             if ($index === $count - 1) {
                 $rules .= "\n\t\t\t";
@@ -298,6 +301,7 @@ class MakeCrudCommand extends Command
              */
             public function rules(): array
             {
+                \$isRequired = request()->isMethod("POST") ?"required|": "";
                 return [
                     //
                     $rules
@@ -498,7 +502,7 @@ class MakeCrudCommand extends Command
                 $content .= <<<HTML
                     <div class="mb-3">
                         <label for="{$field}" class="form-label">{$Field}</label>
-                        <textarea name="{$field}" class="form-control" id="{$field}" aria-describedby="{$field}Help" required>{{ old('{$field}', isset(\$${entityInstance}) ? \$${entityInstance}->{$field} : '') }}</textarea>
+                        <textarea name="{$field}" class="form-control" id="{$field}" aria-describedby="{$field}Help">{{ old('{$field}', isset(\$${entityInstance}) ? \$${entityInstance}->{$field} : '') }}</textarea>
 
                         @error('{$field}')
                             <div class="error text-danger">
