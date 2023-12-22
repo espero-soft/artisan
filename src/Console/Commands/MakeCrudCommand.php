@@ -263,7 +263,7 @@ class MakeCrudCommand extends Command
 
 
             if(stripos($field, 'imageUrls') !== false){
-                $rules .= "'$field' => \$isRequired.'\array|max:5',\n\t\t\t";
+                $rules .= "'$field' => \$isRequired.'array|max:5',\n\t\t\t";
                 $rules .= "'$field.*' => 'image|mimes:webp,jpeg,png,jpg,gif|max:2048'";
                
             }else{
