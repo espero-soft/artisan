@@ -238,13 +238,13 @@ class MakeCrudCommand extends Command
 
         foreach ($fields as $index => $field) {
             if(Str::startsWith(Str::lower($field), 'is')){
-                $merges .= "'$field' => \$this->input($field) ? true : false)";
+                $merges .= "'$field' => \$this->input('$field') ? true : false,\n\t\t\t";
             }
             if(stripos($field, 'slug') !== false){
                 if(in_array('title', $fields)){
-                    $merges .= "'$field' => \Illuminate\Support\Str::slug(\$this->input('title'))";
+                    $merges .= "'$field' => \Illuminate\Support\Str::slug(\$this->input('title')),\n\t\t\t";
                 }elseif(in_array('name', $fields)){
-                    $merges .= "'$field' => \Illuminate\Support\Str::slug(\$this->input('name'))";
+                    $merges .= "'$field' => \Illuminate\Support\Str::slug(\$this->input('name')),\n\t\t\t";
                 }
             }
         }
