@@ -773,7 +773,7 @@ class MakeCrudCommand extends Command
                         $tbody .= <<<HTML
                             <td>
                             <div class="form-check form-switch">
-                                <input name="$field" id="$field" data-id="\${$entityInstance}->id" value="true" data-bs-toggle="toggle"  {{ isset(\$${entityInstance}) && \$${entityInstance}->{$field} == 'true' ? 'checked' : '' }} class="form-check-input" type="checkbox" role="switch" />
+                                <input name="$field" id="$field" data-id="{{\${$entityInstance}->id}}" value="true" data-bs-toggle="toggle"  {{ isset(\$${entityInstance}) && \$${entityInstance}->{$field} == 'true' ? 'checked' : '' }} class="form-check-input" type="checkbox" role="switch" />
                             </div>
                         </td>
                         HTML;
