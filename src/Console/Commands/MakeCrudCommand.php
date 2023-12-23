@@ -749,7 +749,10 @@ class MakeCrudCommand extends Command
             $tbody .= "\n\t\t\t\t\t\t\t";
             if (in_array($field, ['content', 'moreDescription', 'additionalInfos'])) {
                 $tbody .= "<td>{!! \${$this->entity}->$field !!}</td>";
-            } elseif ($field === "imageUrl") {
+            } elseif (stripos($field, 'price') !== false) {
+                $tbody .= "<td>{{ number_format(\${$this->entity}->$field/100, 2, ',', ' ') . ' €' }}</td>";
+            }
+             elseif ($field === "imageUrl") {
                 $tbody .= '<td>
                             <div class="form-group d-flex" id="preview_imageUrl" style="max-width: 100%;">
                                 <img src="{{  Str::startsWith($' . $this->entity . '->' . $field . ', \'http\') ? $' . $this->entity . '->' . $field . ' : Storage::url($' . $this->entity . '->' . $field . ') }}"
