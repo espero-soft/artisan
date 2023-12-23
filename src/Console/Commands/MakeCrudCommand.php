@@ -982,7 +982,7 @@ class MakeCrudCommand extends Command
                                 function toggleColumn(columnIndex, show) {
                                     const dataTable = document.getElementById('{$entityName}');
                                     const cells = dataTable.querySelectorAll(
-                                        `tr td:nth-child($\{columnIndex + 1}), th:nth-child($\{columnIndex + 1})`);
+                                        `tr td:nth-child(${columnIndex + 1}), th:nth-child(${columnIndex + 1})`);
                         
                                     cells.forEach(function(cell) {
                                         if (show) {
