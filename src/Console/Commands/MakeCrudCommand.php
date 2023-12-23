@@ -410,7 +410,7 @@ class MakeCrudCommand extends Command
                 $content .= <<<HTML
                     <div class="name d-flex gap-1">
                         <div class="form-check form-switch">
-                            <input name="{$field}" id="{$field}" value="true" data-bs-toggle="toggle"  {{ \$${entityInstance}->{$field} == 'true' ? 'checked' : '' }} class="form-check-input" type="checkbox" role="switch" />
+                            <input name="{$field}" disabled id="{$field}" value="true" data-bs-toggle="toggle"  {{ \$${entityInstance}->{$field} == 'true' ? 'checked' : '' }} class="form-check-input" type="checkbox" role="switch" />
                         </div>
                         <strong>$Field</strong> 
                     </div>
