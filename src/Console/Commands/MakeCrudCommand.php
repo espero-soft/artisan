@@ -741,7 +741,10 @@ class MakeCrudCommand extends Command
             $tbody = "@foreach(\$$entityNames as \${$this->entity})\n\t\t\t\t\t\t";
             $tbody .= "<tr>";
             $tbody .= "<td>{{ \${$this->entity}->id }}</td>";
-                foreach ($this->getFields() as $field) {
+            $fields = $this->getFields();
+            $lastField = end($fields); // Obtenez le dernier élément du tableau
+            foreach ($fields as $index => $field) {
+                    $isLast = ($field === $lastField);
                     $tbody .= "\n\t\t\t\t\t\t\t";
                     if($field === "content"){
                         $tbody .= "<td>{!! \${$this->entity}->$field !!}</td>";
@@ -782,23 +785,26 @@ class MakeCrudCommand extends Command
                     else{
                         $tbody .= "<td>{{ \${$this->entity}->$field }}</td>";
                     }
-                    $tbody .= "</tr>";
+                    if ($isLast) {
+                        
+                        $tbody .= "\n\t\t\t\t\t\t<td>
+                        <a href=\"{{ route('admin.{$entityInstance}.show', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-primary btn-sm\">
+                            <i class=\"fa-solid fa-eye\"></i>
+                        </a>
+                        <a href=\"{{ route('admin.{$entityInstance}.edit', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-success btn-sm\">
+                            <i class=\"fa-solid fa-pen-to-square\"></i>
+                        </a>
+                        <a href=\"#\" data-id=\"{{ \${$entityInstance}->id }}\" class=\"btn btn-danger btn-sm deleteBtn\">
+                            <i class=\"fa-solid fa-trash\"></i>
+                        </a>
+                    </td>\n\t\t\t\t\t\t";
+                    $tbody .= "<tr>\n\t\t\t\t\t";
+                    }
+                    
                 }
-                $tbody .= "<tr>";
-                $tbody .= "\n\t\t\t\t\t\t<td>
-                <a href=\"{{ route('admin.{$entityInstance}.show', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-primary btn-sm\">
-                    <i class=\"fa-solid fa-eye\"></i>
-                </a>
-                <a href=\"{{ route('admin.{$entityInstance}.edit', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-success btn-sm\">
-                    <i class=\"fa-solid fa-pen-to-square\"></i>
-                </a>
-                <a href=\"#\" data-id=\"{{ \${$entityInstance}->id }}\" class=\"btn btn-danger btn-sm deleteBtn\">
-                    <i class=\"fa-solid fa-trash\"></i>
-                </a>
-            </td>\n\t\t\t\t\t\t";
+         
 
 
-                $tbody .= "<tr>\n\t\t\t\t\t";
             $tbody .= "@endforeach";
 
 
