@@ -79,7 +79,8 @@ class MakeCrudCommand extends Command
 
 
 
-    public function createController(){
+    public function createController()
+    {
 
         $EntityName = ucfirst($this->entity);
         $entityName = lcfirst($this->entity);
@@ -251,13 +252,13 @@ class MakeCrudCommand extends Command
         $count = count($fields);
 
         foreach ($fields as $index => $field) {
-            if(Str::startsWith(Str::lower($field), 'is')){
+            if (Str::startsWith(Str::lower($field), 'is')) {
                 $merges .= "'$field' => \$this->input('$field') ? 'true' : 'false',\n\t\t\t";
             }
-            if(stripos($field, 'slug') !== false){
-                if(in_array('title', $fields)){
+            if (stripos($field, 'slug') !== false) {
+                if (in_array('title', $fields)) {
                     $merges .= "'$field' => \Illuminate\Support\Str::slug(\$this->input('title')),\n\t\t\t";
-                }elseif(in_array('name', $fields)){
+                } elseif (in_array('name', $fields)) {
                     $merges .= "'$field' => \Illuminate\Support\Str::slug(\$this->input('name')),\n\t\t\t";
                 }
             }
@@ -266,27 +267,24 @@ class MakeCrudCommand extends Command
 
             $format = "string";
 
-            if(stripos($field, 'imageUrl') !== false){
+            if (stripos($field, 'imageUrl') !== false) {
                 $format = 'image|mimes:webp,jpeg,png,jpg,gif|max:2048';
-            }elseif(stripos($field, 'email') !== false){
+            } elseif (stripos($field, 'email') !== false) {
                 $format = 'email';
-            }
-            elseif(stripos($field, 'password') !== false){
+            } elseif (stripos($field, 'password') !== false) {
                 $format = 'min:8';
-            }
-            elseif(Str::startsWith(Str::lower($field), 'is') !== false){
+            } elseif (Str::startsWith(Str::lower($field), 'is') !== false) {
                 $format = 'in:true,false|nullable';
-            }
-            elseif(stripos($field, 'slug') !== false){
+            } elseif (stripos($field, 'slug') !== false) {
                 $format = '';
             }
 
 
-            if(stripos($field, 'imageUrls') !== false){
+            if (stripos($field, 'imageUrls') !== false) {
                 $rules .= "'$field' => \$isRequired.'array|max:5',\n\t\t\t";
                 $rules .= "'$field.*' => 'image|mimes:webp,jpeg,png,jpg,gif|max:2048'";
-               
-            }else{
+
+            } else {
                 $rules .= "'$field' => \$isRequired.'$format'";
             }
 
@@ -406,7 +404,7 @@ class MakeCrudCommand extends Command
                     </div>
                 HTML;
 
-            }elseif(Str::startsWith(Str::lower($field), 'is')){
+            } elseif (Str::startsWith(Str::lower($field), 'is')) {
                 $content .= <<<HTML
                     <div class="name d-flex gap-1">
                         <div class="form-check form-switch">
@@ -415,7 +413,7 @@ class MakeCrudCommand extends Command
                         <strong>$Field</strong> 
                     </div>
                 HTML;
-            }else {
+            } else {
                 $content .= <<<HTML
                     <div class="name"><strong>$Field</strong> : {{ \$$entityInstance->$field }}</div>
                 HTML;
@@ -527,7 +525,7 @@ class MakeCrudCommand extends Command
 
         foreach ($this->getFields() as $field) {
             $Field = ucfirst($field);
-            if (in_array($field,['content','moreDescription','additionalInfos'])) {
+            if (in_array($field, ['content', 'moreDescription', 'additionalInfos'])) {
 
                 $content .= <<<HTML
                     <div class="mb-3">
@@ -542,8 +540,7 @@ class MakeCrudCommand extends Command
                     </div>
                 HTML;
 
-            }
-            else if (strtolower($field) === "imageurl") {
+            } else if (strtolower($field) === "imageurl") {
 
                 $content .= <<<HTML
                     <div class="mb-3">
@@ -561,8 +558,7 @@ class MakeCrudCommand extends Command
                         @enderror
                     </div>
                 HTML;
-            }
-            else if (strtolower($field) === "imageurls") {
+            } else if (strtolower($field) === "imageurls") {
 
                 $content .= <<<HTML
                     <div class="mb-3">
@@ -576,13 +572,11 @@ class MakeCrudCommand extends Command
                         @enderror
                     </div>
                 HTML;
-            }
-            else if (strtolower($field) === "slug") {
+            } else if (strtolower($field) === "slug") {
 
                 $content .= <<<HTML
                 HTML;
-            }
-            else if (strtolower($field) === "password") {
+            } else if (strtolower($field) === "password") {
 
                 $content .= <<<HTML
                     <div class="mb-3">
@@ -596,8 +590,7 @@ class MakeCrudCommand extends Command
                         @enderror
                     </div>
                 HTML;
-            }
-            else if (Str::startsWith(Str::lower($field), "is")) {
+            } else if (Str::startsWith(Str::lower($field), "is")) {
 
                 $content .= <<<HTML
                     <div class="mb-3 d-flex gap-2">
@@ -618,8 +611,7 @@ class MakeCrudCommand extends Command
                     </div>
                 HTML;
 
-            }
-            else {
+            } else {
                 $content .= <<<HTML
                     <div class="mb-3">
                         <label for="{$field}" class="form-label">{$Field}</label>
@@ -725,48 +717,48 @@ class MakeCrudCommand extends Command
         EOD;
 
 
-        File::put(resource_path('views/' . $this->entityNames .'/'. $this->entity.'Form.blade.php'), $viewContent);
-        $this->info('1- Create Form template : resources/views/' . $this->entityNames .'/'. $this->entity.'Form.blade.php');
+        File::put(resource_path('views/' . $this->entityNames . '/' . $this->entity . 'Form.blade.php'), $viewContent);
+        $this->info('1- Create Form template : resources/views/' . $this->entityNames . '/' . $this->entity . 'Form.blade.php');
     }
 
     protected function createViewIndex()
     {
 
-            $thead = '';
-            $entityName = ucfirst($this->entity);
-            $EntityName = ucfirst($this->entity);
-            $entityNames = Str::plural($this->entity);
-            $EntityNames = ucfirst($entityNames);
-            $entityInstance = Str::camel($this->entity); // Instance de l'entité
+        $thead = '';
+        $entityName = ucfirst($this->entity);
+        $EntityName = ucfirst($this->entity);
+        $entityNames = Str::plural($this->entity);
+        $EntityNames = ucfirst($entityNames);
+        $entityInstance = Str::camel($this->entity); // Instance de l'entité
 
-            $thead .= "<th scope=\"col\">N#</th>\n\t\t\t\t\t\t";
+        $thead .= "<th scope=\"col\">N#</th>\n\t\t\t\t\t\t";
 
-            foreach ($this->getFields() as $field) {
-                $value = ucfirst($field);
-                $thead .= "<th scope=\"col\">$value</th>\n\t\t\t\t\t\t";
-            }
-            $thead .= "\n\t\t\t\t\t\t<th scope=\"col\">Actions</th>";
+        foreach ($this->getFields() as $field) {
+            $value = ucfirst($field);
+            $thead .= "<th scope=\"col\">$value</th>\n\t\t\t\t\t\t";
+        }
+        $thead .= "\n\t\t\t\t\t\t<th scope=\"col\">Actions</th>";
 
-            $tbody = "@foreach(\$$entityNames as \${$this->entity})\n\t\t\t\t\t\t";
-            $tbody .= "<tr>";
-            $tbody .= "<td>{{ \${$this->entity}->id }}</td>";
-            $fields = $this->getFields();
-            $lastField = end($fields); // Obtenez le dernier élément du tableau
-            foreach ($fields as $index => $field) {
-                    $isLast = ($field === $lastField);
-                    $tbody .= "\n\t\t\t\t\t\t\t";
-                    if(in_array($field,['content','moreDescription','additionalInfos'])){
-                        $tbody .= "<td>{!! \${$this->entity}->$field !!}</td>";
-                    }elseif ($field === "imageUrl") {
-                        $tbody .= '<td>
+        $tbody = "@foreach(\$$entityNames as \${$this->entity})\n\t\t\t\t\t\t";
+        $tbody .= "<tr>";
+        $tbody .= "<td>{{ \${$this->entity}->id }}</td>";
+        $fields = $this->getFields();
+        $lastField = end($fields); // Obtenez le dernier élément du tableau
+        foreach ($fields as $index => $field) {
+            $isLast = ($field === $lastField);
+            $tbody .= "\n\t\t\t\t\t\t\t";
+            if (in_array($field, ['content', 'moreDescription', 'additionalInfos'])) {
+                $tbody .= "<td>{!! \${$this->entity}->$field !!}</td>";
+            } elseif ($field === "imageUrl") {
+                $tbody .= '<td>
                             <div class="form-group d-flex" id="preview_imageUrl" style="max-width: 100%;">
-                                <img src="{{  Str::startsWith($'.$this->entity.'->'.$field.', \'http\') ? $'.$this->entity.'->'.$field.' : Storage::url($'.$this->entity.'->'.$field.') }}"
+                                <img src="{{  Str::startsWith($' . $this->entity . '->' . $field . ', \'http\') ? $' . $this->entity . '->' . $field . ' : Storage::url($' . $this->entity . '->' . $field . ') }}"
                                      alt="Prévisualisation de l\'image"
                                      style="max-width: 100px; display: block;">
                             </div>
                         </td>';
-                    }elseif($field === "imageUrls"){
-                        $tbody .= <<<HTML
+            } elseif ($field === "imageUrls") {
+                $tbody .= <<<HTML
                         <td>
                             <div class="form-group d-flex" id="preview_imageUrl" style="max-width: 100%;">
                             @foreach ([\${$entityInstance}->$field()[0]] as \$url) 
@@ -778,44 +770,41 @@ class MakeCrudCommand extends Command
                         </div>
                     </td>
                     HTML;
-                        
-                    }elseif(Str::startsWith(Str::lower($field), "is")){
-                        $tbody .= <<<HTML
+
+            } elseif (Str::startsWith(Str::lower($field), "is")) {
+                $tbody .= <<<HTML
                             <td>
                             <div class="form-check form-switch">
                                 <input name="$field" id="$field" data-id="{{\${$entityInstance}->id}}" value="true" data-bs-toggle="toggle"  {{ isset(\$${entityInstance}) && \$${entityInstance}->{$field} == 'true' ? 'checked' : '' }} class="form-check-input" type="checkbox" role="switch" />
                             </div>
                         </td>
                         HTML;
-                    }
-                    else{
-                        $tbody .= "<td>{{ \${$this->entity}->$field }}</td>";
-                    }
-                    if ($isLast) {
-                        
-                        $tbody .= "\n\t\t\t\t\t\t<td>
-                        <a href=\"{{ route('admin.{$entityInstance}.show', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-primary btn-sm\">
-                            <i class=\"fa-solid fa-eye\"></i>
-                        </a>
-                        <a href=\"{{ route('admin.{$entityInstance}.edit', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-success btn-sm\">
-                            <i class=\"fa-solid fa-pen-to-square\"></i>
-                        </a>
-                        <a href=\"#\" data-id=\"{{ \${$entityInstance}->id }}\" class=\"btn btn-danger btn-sm deleteBtn\">
-                            <i class=\"fa-solid fa-trash\"></i>
-                        </a>
-                    </td>\n\t\t\t\t\t\t";
-                    $tbody .= "<tr>\n\t\t\t\t\t";
-                    }
-                    
-                }
-         
+            } else {
+                $tbody .= "<td>{{ \${$this->entity}->$field }}</td>";
+            }
+        }
+
+        $tbody .= "\n\t\t\t\t\t\t<td>
+                    <a href=\"{{ route('admin.{$entityInstance}.show', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-primary btn-sm\">
+                        <i class=\"fa-solid fa-eye\"></i>
+                    </a>
+                    <a href=\"{{ route('admin.{$entityInstance}.edit', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-success btn-sm\">
+                        <i class=\"fa-solid fa-pen-to-square\"></i>
+                    </a>
+                    <a href=\"#\" data-id=\"{{ \${$entityInstance}->id }}\" class=\"btn btn-danger btn-sm deleteBtn\">
+                        <i class=\"fa-solid fa-trash\"></i>
+                    </a>
+                </td>\n\t\t\t\t\t\t";
+        $tbody .= "<tr>\n\t\t\t\t\t";
 
 
-            $tbody .= "@endforeach";
 
 
-            // Générer la vue Show avec un tableau Bootstrap et un entête dynamique
-            $content = <<<EOD
+        $tbody .= "@endforeach";
+
+
+        // Générer la vue Show avec un tableau Bootstrap et un entête dynamique
+        $content = <<<EOD
                         @extends('admin')
 
                         @section('styles')
@@ -1048,8 +1037,8 @@ class MakeCrudCommand extends Command
                         @endsection
                         EOD;
 
-            File::put(resource_path('views/' . $this->entityNames . '/index.blade.php'), $content);
-            $this->info('2- Data List template : resources/views/' . $this->entityNames . '/index.blade.php');
+        File::put(resource_path('views/' . $this->entityNames . '/index.blade.php'), $content);
+        $this->info('2- Data List template : resources/views/' . $this->entityNames . '/index.blade.php');
     }
 
     protected function createRoutes()
@@ -1103,7 +1092,8 @@ class MakeCrudCommand extends Command
         }
     }
 
-    protected function generateBase(){
+    protected function generateBase()
+    {
         $baseFileName = resource_path('views/admin.blade.php'); // Correction du chemin et de la fonction resource_path()
 
         $content = <<<HTML
@@ -1176,11 +1166,11 @@ class MakeCrudCommand extends Command
     }
 
     protected function addNavItem($text)
-{
-    $baseFileName = resource_path('views/admin.blade.php'); // Assurez-vous que le chemin est correct
-    $entityNames = Str::singular($text);
-    $EntityNames = Str::plural(Str::ucfirst($text));
-    $navItem = <<<HTML
+    {
+        $baseFileName = resource_path('views/admin.blade.php'); // Assurez-vous que le chemin est correct
+        $entityNames = Str::singular($text);
+        $EntityNames = Str::plural(Str::ucfirst($text));
+        $navItem = <<<HTML
     <li class="nav-item">
         <a class="nav-link" href="{{route('admin.{$entityNames}.index')}}">
             $EntityNames
@@ -1188,31 +1178,32 @@ class MakeCrudCommand extends Command
     </li>
     HTML;
 
-    // Charge le contenu existant du fichier
-    $existingContent = file_get_contents($baseFileName);
+        // Charge le contenu existant du fichier
+        $existingContent = file_get_contents($baseFileName);
 
-    // Vérifie si l'élément de menu existe déjà dans le fichier
-    if (strpos($existingContent, $navItem) !== false) {
-        $this->info('Navigation item already exists in the base view file: ' . $baseFileName);
-        return; // Arrête la fonction si l'élément existe déjà
+        // Vérifie si l'élément de menu existe déjà dans le fichier
+        if (strpos($existingContent, $navItem) !== false) {
+            $this->info('Navigation item already exists in the base view file: ' . $baseFileName);
+            return; // Arrête la fonction si l'élément existe déjà
+        }
+
+        // Trouve l'emplacement où insérer le nouvel élément dans le menu de navigation
+        $insertPosition = strpos($existingContent, '</ul>');
+        if ($insertPosition !== false) {
+            // Insère le nouvel élément juste avant la fermeture de la liste ul
+            $newContent = substr_replace($existingContent, $navItem, $insertPosition, 0);
+
+            // Écrit le contenu modifié dans le fichier
+            file_put_contents($baseFileName, $newContent);
+            $this->info('Navigation item added to the base view file: ' . $baseFileName);
+        } else {
+            $this->error('Could not find the appropriate position to insert the navigation item.');
+        }
     }
 
-    // Trouve l'emplacement où insérer le nouvel élément dans le menu de navigation
-    $insertPosition = strpos($existingContent, '</ul>');
-    if ($insertPosition !== false) {
-        // Insère le nouvel élément juste avant la fermeture de la liste ul
-        $newContent = substr_replace($existingContent, $navItem, $insertPosition, 0);
 
-        // Écrit le contenu modifié dans le fichier
-        file_put_contents($baseFileName, $newContent);
-        $this->info('Navigation item added to the base view file: ' . $baseFileName);
-    } else {
-        $this->error('Could not find the appropriate position to insert the navigation item.');
-    }
-}
-
-
-    protected function getFields(){
+    protected function getFields()
+    {
         $migrationFileName = database_path('migrations') . "/" . $this->getMigrationFileName();
 
         $fields = [];
