@@ -782,7 +782,9 @@ class MakeCrudCommand extends Command
                     else{
                         $tbody .= "<td>{{ \${$this->entity}->$field }}</td>";
                     }
+                    $tbody .= "</tr>";
                 }
+                $tbody .= "<tr>";
                 $tbody .= "\n\t\t\t\t\t\t<td>
                 <a href=\"{{ route('admin.{$entityInstance}.show', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-primary btn-sm\">
                     <i class=\"fa-solid fa-eye\"></i>
@@ -801,7 +803,7 @@ class MakeCrudCommand extends Command
 
 
             // Générer la vue Show avec un tableau Bootstrap et un entête dynamique
-            $content = <<<EOD
+            $content = <<<HTML
                         @extends('admin')
 
                         @section('styles')
@@ -1032,7 +1034,7 @@ class MakeCrudCommand extends Command
                                 }
                             </script>
                         @endsection
-                        EOD;
+                        HTML;
 
             File::put(resource_path('views/' . $this->entityNames . '/index.blade.php'), $content);
             $this->info('2- Data List template : resources/views/' . $this->entityNames . '/index.blade.php');
