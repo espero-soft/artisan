@@ -750,7 +750,7 @@ class MakeCrudCommand extends Command
             if (in_array($field, ['content', 'moreDescription', 'additionalInfos'])) {
                 $tbody .= "<td>{!! \${$this->entity}->$field !!}</td>";
             } elseif (stripos($field, 'price') !== false) {
-                $tbody .= "<td>{{ number_format(\${$this->entity}->$field/100, 2, ',', ' ') . ' €' }}</td>";
+                $tbody .= "<td>{{ number_format(\${$this->entity}->$field, 2, ',', ' ') . ' €' }}</td>";
             }
              elseif ($field === "imageUrl") {
                 $tbody .= '<td>
