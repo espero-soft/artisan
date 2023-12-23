@@ -798,7 +798,7 @@ class MakeCrudCommand extends Command
                         <i class=\"fa-solid fa-trash\"></i>
                     </a>
                 </td>\n\t\t\t\t\t\t";
-        $tbody .= "<tr>\n\t\t\t\t\t";
+        $tbody .= "</tr>\n\t\t\t\t\t";
 
 
 
