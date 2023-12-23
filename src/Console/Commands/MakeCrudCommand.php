@@ -755,10 +755,9 @@ class MakeCrudCommand extends Command
             foreach ($fields as $index => $field) {
                     $isLast = ($field === $lastField);
                     $tbody .= "\n\t\t\t\t\t\t\t";
-                    if($field === "content"){
+                    if(in_array($field,['content','moreDescription','additionalInfos'])){
                         $tbody .= "<td>{!! \${$this->entity}->$field !!}</td>";
-                    }
-                    elseif ($field === "imageUrl") {
+                    }elseif ($field === "imageUrl") {
                         $tbody .= '<td>
                             <div class="form-group d-flex" id="preview_imageUrl" style="max-width: 100%;">
                                 <img src="{{  Str::startsWith($'.$this->entity.'->'.$field.', \'http\') ? $'.$this->entity.'->'.$field.' : Storage::url($'.$this->entity.'->'.$field.') }}"
@@ -766,8 +765,7 @@ class MakeCrudCommand extends Command
                                      style="max-width: 100px; display: block;">
                             </div>
                         </td>';
-                    }
-                    elseif($field === "imageUrls"){
+                    }elseif($field === "imageUrls"){
                         $tbody .= <<<HTML
                         <td>
                             <div class="form-group d-flex" id="preview_imageUrl" style="max-width: 100%;">
@@ -781,8 +779,7 @@ class MakeCrudCommand extends Command
                     </td>
                     HTML;
                         
-                    }
-                    elseif(Str::startsWith(Str::lower($field), "is")){
+                    }elseif(Str::startsWith(Str::lower($field), "is")){
                         $tbody .= <<<HTML
                             <td>
                             <div class="form-check form-switch">
