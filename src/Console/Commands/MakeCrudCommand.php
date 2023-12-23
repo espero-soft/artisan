@@ -370,7 +370,7 @@ class MakeCrudCommand extends Command
 
     protected function createViewShow()
     {
-        $content = '<div class="data-line">';
+        $content = '';
         $entityName = ucfirst($this->entity);
         $entityNames = Str::plural($this->entity);
         $entityInstance = Str::camel($this->entity); // Instance de l'entité
@@ -382,45 +382,59 @@ class MakeCrudCommand extends Command
 
             if ($field === "imageUrl") {
                 $content .= <<<HTML
-                    <div class="name"><strong>$Field</strong></div>
-                    <div class="form-group d-flex" id="preview_imageUrl" style="max-width: 100%;">
-                        <img src="{{ Str::startsWith(\${$entityInstance}->$field, 'http') ? \${$entityInstance}->$field : Storage::url(\${$entityInstance}->$field) }}"
-                             alt="Prévisualisation de l'image"
-                             style="max-width: 100px; display: block;">
-                    </div>
+                    <tr>
+                        <th>$Field</strong></th>
+                        <td>
+                            <div class="form-group d-flex" id="preview_imageUrl" style="max-width: 100%;">
+                                <img src="{{ Str::startsWith(\${$entityInstance}->$field, 'http') ? \${$entityInstance}->$field : Storage::url(\${$entityInstance}->$field) }}"
+                                     alt="Prévisualisation de l'image"
+                                     style="max-width: 100px; display: block;">
+                            </div>
+                        </td>
+                     </tr>
                 HTML;
 
             } elseif ($field === "imageUrls") {
                 $content .= <<<HTML
-                    <div class="name"><strong>$Field</strong></div>
-                    <div class="form-group d-flex" id="preview_imageUrls" style="max-width: 100%;">
-                        <!-- Assurez-vous que \$this->{$entityInstance}->$field est un tableau d'URLs -->
-                       @foreach (\${$entityInstance}->$field() as \$url)
-                            <img src="{{ Str::startsWith(\$url, 'http') ? \$url : Storage::url(\$url) }}"
-                                 alt="Prévisualisation de l'image"
-                                 style="max-width: 100px; display: block;"
-                                 />
-                        @endforeach
-                    </div>
+                    <tr>
+                        <th>$Field</th>
+                        <td>
+                            <div class="form-group d-flex" id="preview_imageUrls" style="max-width: 100%;">
+                                <!-- Assurez-vous que \$this->{$entityInstance}->$field est un tableau d'URLs -->
+                               @foreach (\${$entityInstance}->$field() as \$url)
+                                    <img src="{{ Str::startsWith(\$url, 'http') ? \$url : Storage::url(\$url) }}"
+                                         alt="Prévisualisation de l'image"
+                                         style="max-width: 100px; display: block;"
+                                         />
+                                @endforeach
+                            </div>
+
+                        </td>
+                    </tr>
                 HTML;
 
             } elseif (Str::startsWith(Str::lower($field), 'is')) {
                 $content .= <<<HTML
-                    <div class="name d-flex gap-1">
-                        <div class="form-check form-switch">
-                            <input name="{$field}" disabled id="{$field}" value="true" data-bs-toggle="toggle"  {{ \$${entityInstance}->{$field} == 'true' ? 'checked' : '' }} class="form-check-input" type="checkbox" role="switch" />
-                        </div>
-                        <strong>$Field</strong> 
-                    </div>
+                    <tr>
+                        <th>$Field</th> 
+                        <td>
+                            <div class="form-check form-switch">
+                                <input name="{$field}" disabled id="{$field}" value="true" data-bs-toggle="toggle"  {{ \$${entityInstance}->{$field} == 'true' ? 'checked' : '' }} class="form-check-input" type="checkbox" role="switch" />
+                            </div>
+                        </td>
+                    </tr>
                 HTML;
             } else {
                 $content .= <<<HTML
-                    <div class="name"><strong>$Field</strong> : {{ \$$entityInstance->$field }}</div>
+                    <tr>
+                        <th>$Field</th> 
+                        <td>{{ \$$entityInstance->$field }}</td>
+                </tr>
                 HTML;
             }
         }
 
-        $content .= "\n\t</div>";
+        $content .= "\n\t";
 
         $viewContent = <<<EOD
             @extends('admin')
@@ -434,16 +448,18 @@ class MakeCrudCommand extends Command
                     <h3>Show $entityName</h3>
 
                     <a href="{{ route('admin.{$entityInstance}.index') }}" class="btn btn-success my-1">
-
-                            Home
+                        Home
                     </a>
+                    <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <tbody>
+                            $content
+                        </tbody>
+                    </table>
 
-                    $content
                     <div>
                         <a href="{{ route('admin.{$entityInstance}.edit', ['id' => \${$entityInstance}->id]) }}" class="btn btn-primary my-1">
-
-                            <i class="fa-solid fa-pen-to-square"></i>
-                                Edit
+                            <i class="fa-solid fa-pen-to-square"></i>  Edit
                         </a>
                     </div>
                 </div>
@@ -751,8 +767,7 @@ class MakeCrudCommand extends Command
                 $tbody .= "<td>{!! \${$this->entity}->$field !!}</td>";
             } elseif (stripos($field, 'price') !== false) {
                 $tbody .= "<td>{{ number_format(\${$this->entity}->$field, 2, ',', ' ') . ' €' }}</td>";
-            }
-             elseif ($field === "imageUrl") {
+            } elseif ($field === "imageUrl") {
                 $tbody .= '<td>
                             <div class="form-group d-flex" id="preview_imageUrl" style="max-width: 100%;">
                                 <img src="{{  Str::startsWith($' . $this->entity . '->' . $field . ', \'http\') ? $' . $this->entity . '->' . $field . ' : Storage::url($' . $this->entity . '->' . $field . ') }}"
