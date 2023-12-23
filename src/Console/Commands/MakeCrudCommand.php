@@ -949,7 +949,8 @@ class MakeCrudCommand extends Command
                                         checkbox.role="switch"
                                         checkbox.className = 'columnSelector form-check-input';
                                         checkbox.dataset.column = index;
-                                        checkbox.checked = false; // Sélectionner par défaut
+                                        const savedSelection = localStorage.getItem('selectedColumns#{$entityName}');
+                                        checkbox.checked = !!!savedSelection; // Sélectionner par défaut
                                         checkbox.addEventListener('change', function() {
                                             const columnIndex = parseInt(checkbox.dataset.column);
                                             toggleColumn(columnIndex, checkbox.checked);
@@ -967,7 +968,6 @@ class MakeCrudCommand extends Command
                                             sortTable(index);
                                         });
 
-                                        const savedSelection = localStorage.getItem('selectedColumns#{$entityName}');
                                         if (savedSelection) {
                                             const selectedColumns = JSON.parse(savedSelection);
                                             toggleColumn(parseInt(index), selectedColumns.includes(index));
@@ -1009,11 +1009,11 @@ class MakeCrudCommand extends Command
                                     const selectedColumns = Array.from(document.querySelectorAll('.columnSelector'))
                                         .filter(c => c.checked)
                                         .map(c => c.dataset.column);
-                                    localStorage.setItem('selectedColumns', JSON.stringify(selectedColumns));
+                                    localStorage.setItem('selectedColumns#{$entityName}', JSON.stringify(selectedColumns));
                                 }
                         
                                 function loadSavedSelection() {
-                                    const savedSelection = localStorage.getItem('selectedColumns');
+                                    const savedSelection = localStorage.getItem('selectedColumns#{$entityName}');
                                     if (savedSelection) {
                                         const selectedColumns = JSON.parse(savedSelection);
                                         selectedColumns.forEach(function(columnIndex) {
