@@ -406,7 +406,16 @@ class MakeCrudCommand extends Command
                     </div>
                 HTML;
 
-            } else {
+            }elseif(Str::startsWith(Str::lower($field), 'is')){
+                $content .= <<<HTML
+                    <div class="name d-flex gap-1">
+                        <div class="form-check form-switch">
+                            <input name="{$field}" id="{$field}" value="true" data-bs-toggle="toggle"  {{ \$${entityInstance}->{$field} == 'true' ? 'checked' : '' }} class="form-check-input" type="checkbox" role="switch" />
+                        </div>
+                        <strong>$Field</strong> 
+                    </div>
+                HTML;
+            }else {
                 $content .= <<<HTML
                     <div class="name"><strong>$Field</strong> : {{ \$$entityInstance->$field }}</div>
                 HTML;
