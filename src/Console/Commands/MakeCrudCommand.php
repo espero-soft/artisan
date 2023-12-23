@@ -784,16 +784,16 @@ class MakeCrudCommand extends Command
                     }
                 }
                 $tbody .= "\n\t\t\t\t\t\t<td>
-                    <a href=\"{{ route('admin.{$entityInstance}.show', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-primary btn-sm\">
-                        <i class=\"fa-solid fa-eye\"></i>
-                    </a>
-                    <a href=\"{{ route('admin.{$entityInstance}.edit', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-success btn-sm\">
-                        <i class=\"fa-solid fa-pen-to-square\"></i>
-                    </a>
-                    <a href=\"#\" data-id=\"{{ \${$entityInstance}->id }}\" class=\"btn btn-danger btn-sm deleteBtn\">
-                        <i class=\"fa-solid fa-trash\"></i>
-                    </a>
-                </td>\n\t\t\t\t\t\t";
+                <a href=\"{{ route('admin.{$entityInstance}.show', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-primary btn-sm\">
+                    <i class=\"fa-solid fa-eye\"></i>
+                </a>
+                <a href=\"{{ route('admin.{$entityInstance}.edit', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-success btn-sm\">
+                    <i class=\"fa-solid fa-pen-to-square\"></i>
+                </a>
+                <a href=\"#\" data-id=\"{{ \${$entityInstance}->id }}\" class=\"btn btn-danger btn-sm deleteBtn\">
+                    <i class=\"fa-solid fa-trash\"></i>
+                </a>
+            </td>\n\t\t\t\t\t\t";
 
 
                 $tbody .= "<tr>\n\t\t\t\t\t";
@@ -950,7 +950,7 @@ class MakeCrudCommand extends Command
                                             saveSelection();
                                         });
                         
-                                        label.appendChild(document.createTextNode(` ${header.textContent}`));
+                                        label.appendChild(document.createTextNode(header.textContent));
                                         div.appendChild(label)
                                         div.appendChild(checkbox)
                                         a.appendChild(div);
@@ -982,7 +982,7 @@ class MakeCrudCommand extends Command
                                 function toggleColumn(columnIndex, show) {
                                     const dataTable = document.getElementById('{$entityName}');
                                     const cells = dataTable.querySelectorAll(
-                                        `tr td:nth-child(${columnIndex + 1}), th:nth-child(${columnIndex + 1})`);
+                                        `tr td:nth-child($\{columnIndex + 1\}), th:nth-child($\{columnIndex + 1\})`);
                         
                                     cells.forEach(function(cell) {
                                         if (show) {
@@ -1005,7 +1005,7 @@ class MakeCrudCommand extends Command
                                     if (savedSelection) {
                                         const selectedColumns = JSON.parse(savedSelection);
                                         selectedColumns.forEach(function(columnIndex) {
-                                            const checkbox = document.querySelector(`.columnSelector[data-column="${columnIndex}"]`);
+                                            const checkbox = document.querySelector(`.columnSelector[data-column="\$\{columnIndex\}"]`);
                                             if (checkbox) {
                                                 checkbox.checked = true;
                                                 toggleColumn(parseInt(columnIndex), true);
