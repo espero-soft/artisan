@@ -982,7 +982,7 @@ class MakeCrudCommand extends Command
                                 function toggleColumn(columnIndex, show) {
                                     const dataTable = document.getElementById('{$entityName}');
                                     const cells = dataTable.querySelectorAll(
-                                        `tr td:nth-child($\{columnIndex + 1\}), th:nth-child($\{columnIndex + 1\})`);
+                                        `tr td:nth-child(${columnIndex + 1}), th:nth-child(${columnIndex + 1})`);
                         
                                     cells.forEach(function(cell) {
                                         if (show) {
@@ -1005,7 +1005,7 @@ class MakeCrudCommand extends Command
                                     if (savedSelection) {
                                         const selectedColumns = JSON.parse(savedSelection);
                                         selectedColumns.forEach(function(columnIndex) {
-                                            const checkbox = document.querySelector(`.columnSelector[data-column="\$\{columnIndex\}"]`);
+                                            const checkbox = document.querySelector(`.columnSelector[data-column="\${columnIndex}"]`);
                                             if (checkbox) {
                                                 checkbox.checked = true;
                                                 toggleColumn(parseInt(columnIndex), true);
