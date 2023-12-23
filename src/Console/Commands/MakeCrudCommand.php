@@ -803,7 +803,7 @@ class MakeCrudCommand extends Command
 
 
             // Générer la vue Show avec un tableau Bootstrap et un entête dynamique
-            $content = <<<HTML
+            $content = <<<EOD
                         @extends('admin')
 
                         @section('styles')
@@ -984,7 +984,7 @@ class MakeCrudCommand extends Command
                                 function toggleColumn(columnIndex, show) {
                                     const dataTable = document.getElementById('{$entityName}');
                                     const cells = dataTable.querySelectorAll(
-                                        `tr td:nth-child(${columnIndex + 1}), th:nth-child(${columnIndex + 1})`);
+                                        `tr td:nth-child(\${columnIndex + 1}), th:nth-child(\${columnIndex + 1})`);
                         
                                     cells.forEach(function(cell) {
                                         if (show) {
@@ -1034,7 +1034,7 @@ class MakeCrudCommand extends Command
                                 }
                             </script>
                         @endsection
-                        HTML;
+                        EOD;
 
             File::put(resource_path('views/' . $this->entityNames . '/index.blade.php'), $content);
             $this->info('2- Data List template : resources/views/' . $this->entityNames . '/index.blade.php');
