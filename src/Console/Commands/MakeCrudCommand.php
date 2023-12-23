@@ -424,7 +424,16 @@ class MakeCrudCommand extends Command
                         </td>
                     </tr>
                 HTML;
-            } else {
+            } 
+            elseif(in_array($field, ['content', 'moreDescription', 'additionalInfos'])) {
+                $content .= <<<HTML
+                    <tr>
+                        <th>$Field</th> 
+                        <td>{!! \$$entityInstance->$field !!}</td>
+                </tr>
+                HTML;
+
+            }else {
                 $content .= <<<HTML
                     <tr>
                         <th>$Field</th> 
