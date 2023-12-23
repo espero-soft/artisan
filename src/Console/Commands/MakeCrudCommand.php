@@ -819,14 +819,14 @@ class MakeCrudCommand extends Command
                         <h3> $EntityNames Details</h3>
 
                         <div class="d-flex justify-content-end">
-                            <div class="dropdown my-1">
+                            <div class="dropdown m-1">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                     aria-expanded="false">
                                     Column
                                 </button>
                                 <div id="columnSelector" class="dropdown-menu"> </div>
                             </div>
-                            <a href="{{ route('admin.{$entityInstance}.create') }}" class="btn btn-success my-1">
+                            <a href="{{ route('admin.{$entityInstance}.create') }}" class="btn btn-success m-1">
 
                                     Create {$entityName}
 
