@@ -725,6 +725,7 @@ class MakeCrudCommand extends Command
 
             $thead = '';
             $entityName = ucfirst($this->entity);
+            $EntityName = ucfirst($this->entity);
             $entityNames = Str::plural($this->entity);
             $EntityNames = ucfirst($entityNames);
             $entityInstance = Str::camel($this->entity); // Instance de l'entité
@@ -783,16 +784,16 @@ class MakeCrudCommand extends Command
                     }
                 }
                 $tbody .= "\n\t\t\t\t\t\t<td>
-                <a href=\"{{ route('admin.{$entityInstance}.show', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-primary btn-sm\">
-                    <i class=\"fa-solid fa-eye\"></i>
-                </a>
-                <a href=\"{{ route('admin.{$entityInstance}.edit', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-success btn-sm\">
-                    <i class=\"fa-solid fa-pen-to-square\"></i>
-                </a>
-                <a href=\"#\" data-id=\"{{ \${$entityInstance}->id }}\" class=\"btn btn-danger btn-sm deleteBtn\">
-                    <i class=\"fa-solid fa-trash\"></i>
-                </a>
-            </td>\n\t\t\t\t\t\t";
+                    <a href=\"{{ route('admin.{$entityInstance}.show', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-primary btn-sm\">
+                        <i class=\"fa-solid fa-eye\"></i>
+                    </a>
+                    <a href=\"{{ route('admin.{$entityInstance}.edit', ['id' => \${$entityInstance}->id]) }}\" class=\"btn btn-success btn-sm\">
+                        <i class=\"fa-solid fa-pen-to-square\"></i>
+                    </a>
+                    <a href=\"#\" data-id=\"{{ \${$entityInstance}->id }}\" class=\"btn btn-danger btn-sm deleteBtn\">
+                        <i class=\"fa-solid fa-trash\"></i>
+                    </a>
+                </td>\n\t\t\t\t\t\t";
 
 
                 $tbody .= "<tr>\n\t\t\t\t\t";
@@ -812,6 +813,13 @@ class MakeCrudCommand extends Command
                         <h3> $EntityNames Details</h3>
 
                         <div class="d-flex justify-content-end">
+                            <div class="dropdown my-1">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Column
+                                </button>
+                                <div id="columnSelector" class="dropdown-menu"> </div>
+                            </div>
                             <a href="{{ route('admin.{$entityInstance}.create') }}" class="btn btn-success my-1">
 
                                     Create {$entityName}
@@ -919,6 +927,109 @@ class MakeCrudCommand extends Command
                                     })
 
                                 });
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const tableHeaders = document.querySelectorAll('#{$entityName} th');
+                                    const columnSelector = document.getElementById('columnSelector');
+                        
+                                    tableHeaders.forEach(function(header, index) {
+                                        const li = document.createElement('li');
+                                        const a = document.createElement('a');
+                                        const div = document.createElement('div');
+                                        a.className = 'dropdown-item';
+                                        div.className = 'form-check form-switch';
+                                        const label = document.createElement('label');
+                                        const checkbox = document.createElement('input');
+                                        checkbox.type = 'checkbox';
+                                        checkbox.role="switch"
+                                        checkbox.className = 'columnSelector form-check-input';
+                                        checkbox.dataset.column = index;
+                                        checkbox.checked = true; // Sélectionner par défaut
+                                        checkbox.addEventListener('change', function() {
+                                            const columnIndex = parseInt(checkbox.dataset.column);
+                                            toggleColumn(columnIndex, checkbox.checked);
+                                            saveSelection();
+                                        });
+                        
+                                        label.appendChild(document.createTextNode(` ${header.textContent}`));
+                                        div.appendChild(label)
+                                        div.appendChild(checkbox)
+                                        a.appendChild(div);
+                                        li.appendChild(a);
+                                        columnSelector.appendChild(li);
+                        
+                                        header.addEventListener('click', function() {
+                                            sortTable(index);
+                                        });
+                                    });
+                        
+                        
+                                    const checkboxes = document.querySelectorAll('.columnSelector');
+                        
+                                    checkboxes.forEach(function(checkbox) {
+                                        checkbox.addEventListener('change', function() {
+                                            const columnIndex = parseInt(checkbox.dataset.column);
+                                            toggleColumn(columnIndex, checkbox.checked);
+                        
+                                            // Sauvegarde la sélection dans le localStorage
+                                            saveSelection();
+                                        });
+                                    });
+                        
+                                    // Chargement des valeurs sauvegardées dans le localStorage
+                                    loadSavedSelection();
+                                });
+                        
+                                function toggleColumn(columnIndex, show) {
+                                    const dataTable = document.getElementById('{$entityName}');
+                                    const cells = dataTable.querySelectorAll(
+                                        `tr td:nth-child(${columnIndex + 1}), th:nth-child(${columnIndex + 1})`);
+                        
+                                    cells.forEach(function(cell) {
+                                        if (show) {
+                                            cell.style.display = ''; // Affiche la colonne
+                                        } else {
+                                            cell.style.display = 'none'; // Masque la colonne
+                                        }
+                                    });
+                                }
+                        
+                                function saveSelection() {
+                                    const selectedColumns = Array.from(document.querySelectorAll('.columnSelector'))
+                                        .filter(c => c.checked)
+                                        .map(c => c.dataset.column);
+                                    localStorage.setItem('selectedColumns', JSON.stringify(selectedColumns));
+                                }
+                        
+                                function loadSavedSelection() {
+                                    const savedSelection = localStorage.getItem('selectedColumns');
+                                    if (savedSelection) {
+                                        const selectedColumns = JSON.parse(savedSelection);
+                                        selectedColumns.forEach(function(columnIndex) {
+                                            const checkbox = document.querySelector(`.columnSelector[data-column="${columnIndex}"]`);
+                                            if (checkbox) {
+                                                checkbox.checked = true;
+                                                toggleColumn(parseInt(columnIndex), true);
+                                            }
+                                        });
+                                    }
+                                }
+                        
+                                function sortTable(columnIndex) {
+                                    const table = document.getElementById('{$entityName}');
+                                    const rows = Array.from(table.querySelectorAll('tbody tr'));
+                        
+                                    console.log({rows});
+                        
+                                    rows.sort((a, b) => {
+                                        const cellA = a.querySelectorAll('td')[columnIndex].textContent;
+                                        const cellB = b.querySelectorAll('td')[columnIndex].textContent;
+                        
+                                        return cellA.localeCompare(cellB, undefined, { numeric: true, sensitivity: 'base' });
+                                    });
+                        
+                                    table.querySelector('tbody').innerHTML = '';
+                                    rows.forEach(row => table.querySelector('tbody').appendChild(row));
+                                }
                             </script>
                         @endsection
                         EOD;
@@ -1032,6 +1143,8 @@ class MakeCrudCommand extends Command
                 </div>
             </div>
                 <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
                 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
                 <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
             @yield('scripts')
