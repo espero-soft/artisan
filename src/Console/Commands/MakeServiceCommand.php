@@ -191,6 +191,26 @@ class MakeServiceCommand extends Command
                 {
                     return Session::get('compare', []);
                 }
+                public function getComparedProductsDetails()
+                {
+                    \$compareProducts = Session::get('compare', []);
+                    \$comparedDetails = [];
+
+                    foreach (\$compareProducts as \$productId) {
+                        \$product = Product::find(\$productId);
+
+                        if (\$product) {
+                            \$comparedDetails[] = [
+                                'id' => \$product->id,
+                                'name' => \$product->name,
+                                'price' => \$product->price,
+                                // Ajoutez d'autres attributs du produit ici
+                            ];
+                        }
+                    }
+
+                    return \$comparedDetails;
+                }
 
                 public function clearComparedProducts()
                 {
@@ -238,6 +258,27 @@ class MakeServiceCommand extends Command
                 public function getWishedProducts()
                 {
                     return Session::get('wish', []);
+                }
+
+                public function getWishedProductsDetails()
+                {
+                    \$wishProducts = Session::get('wish', []);
+                    \$wishedDetails = [];
+
+                    foreach (\$wishProducts as \$productId) {
+                        \$product = Product::find(\$productId);
+
+                        if (\$product) {
+                            \$wishedDetails[] = [
+                                'id' => \$product->id,
+                                'name' => \$product->name,
+                                'price' => \$product->price,
+                                // Ajoutez d'autres attributs du produit ici
+                            ];
+                        }
+                    }
+
+                    return \$wishedDetails;
                 }
 
                 public function clearWishedProducts()
