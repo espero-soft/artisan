@@ -1,7 +1,6 @@
 <?php
 // app/Console/Commands/MakeServiceCommand.php
-
-namespace App\Console\Commands;
+namespace EsperoSoft\Artisan\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
