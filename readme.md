@@ -1,6 +1,6 @@
 # espero-soft/artisan
 
-A Laravel package for generating entities and CRUD operations.
+A Laravel package for generating entities, CRUD, services operations for laravel project.
 
 ## Installation
 
@@ -21,9 +21,11 @@ protected function commands(): void
     $this->load(__DIR__.'/Commands');
 
     // Registering the MakeEntityCommand as a ClosureCommand
-    $this->getArtisan()->add( new MakeEntityCommand() );
+    $this->getArtisan()->add( new EsperoSoft\Artisan\Console\Commands\MakeEntityCommand() );
     // Registering the MakeCrudCommand as a ClosureCommand
-    $this->getArtisan()->add( new MakeCrudCommand() );
+    $this->getArtisan()->add( new EsperoSoft\Artisan\Console\Commands\MakeCrudCommand() );
+    // Registering the MakeServiceCommand as a ClosureCommand
+    $this->getArtisan()->add( new EsperoSoft\Artisan\Console\Commands\MakeServiceCommand() );
 
     require base_path('routes/console.php');
 }

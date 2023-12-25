@@ -1152,6 +1152,17 @@ class MakeCrudCommand extends Command
                 .espero-soft-admin .row {
                     height: 100vh;
                 }
+                .espero-soft-admin a{
+                    /* color: inherit; */
+                    text-decoration: inherit;
+                }
+                .espero-soft-admin h2{
+                    color: black;
+                    text-transform: uppercase;
+                }
+                .espero-soft-admin nav-item{
+                    
+                }
 
                 .btn {
                     border-radius: 0;
