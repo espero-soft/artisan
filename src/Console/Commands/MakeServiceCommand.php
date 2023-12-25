@@ -15,7 +15,13 @@ class MakeServiceCommand extends Command
     public function handle()
     {
         $name = $this->argument('name');
-        $serviceName = $this->generateServiceName($name);
+        $serviceName = $this->generateServiceName(ucfirst($name));
+
+        $servicesDirectory = app_path("Services");
+
+        if (!File::isDirectory($servicesDirectory)) {
+            File::makeDirectory($servicesDirectory, 0755, true);
+        }
 
         $servicePath = app_path("Services/{$serviceName}.php");
 

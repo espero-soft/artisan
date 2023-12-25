@@ -21,11 +21,11 @@ protected function commands(): void
     $this->load(__DIR__.'/Commands');
 
     // Registering the MakeEntityCommand as a ClosureCommand
-    $this->getArtisan()->add( new \EsperoSoft\Artisan\Console\Commands\MakeEntityCommand() );
+    $this->getArtisan()->add( new MakeEntityCommand() );
     // Registering the MakeCrudCommand as a ClosureCommand
-    $this->getArtisan()->add( new \EsperoSoft\Artisan\Console\Commands\MakeCrudCommand() );
+    $this->getArtisan()->add( new MakeCrudCommand() );
     // Registering the MakeServiceCommand as a ClosureCommand
-    $this->getArtisan()->add( new \EsperoSoft\Artisan\Console\Commands\MakeServiceCommand() );
+    $this->getArtisan()->add( new MakeServiceCommand() );
 
     require base_path('routes/console.php');
 }
