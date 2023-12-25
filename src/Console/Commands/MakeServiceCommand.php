@@ -58,10 +58,8 @@ class MakeServiceCommand extends Command
         // Default service stub
         $stub = <<<EOT
         <?php
-
+        
         namespace App\Services;
-
-        use Illuminate\Support\Facades\Session;
 
         class {$name}
         {
